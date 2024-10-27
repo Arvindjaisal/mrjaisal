@@ -1,2 +1,2 @@
 # mrjaisal
-Tap to earn Crypto coin
+Head OR Tail Game
