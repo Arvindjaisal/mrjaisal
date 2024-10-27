@@ -3,50 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tap to Earn Coins</title>
+    <title>Heads or Tails Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            background-color: #282c34;
-            color: white;
+            background: linear-gradient(45deg, #f6e58d, #ffbe76); /* Celebration-like background */
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: #4e3b31; /* Dark brown color */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            border: 3px solid black; /* Black border */
         }
         h1 {
-            margin-bottom: 20px;
+            color: #fff; /* White color for heading */
+        }
+        .ticket {
+            margin: 20px 0;
+            color: #007bff; /* Blue color for ticket count */
         }
         button {
-            padding: 15px 30px;
-            font-size: 20px;
-            background-color: #61dafb;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
-            background-color: #21a1f1;
+        .start-btn {
+            background-color: #28a745; /* Green */
+            color: white;
         }
-        .coins {
+        .start-btn:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+        .recharge-btn {
+            background-color: #ffc107; /* Dark Yellow */
+            color: black;
+        }
+        .recharge-btn:hover {
+            background-color: #e0a800; /* Darker yellow on hover */
+        }
+        #coinImage {
+            width: 100px;
+            height: 100px;
+            display: none; /* Initially hidden */
+            transition: transform 3s ease-in-out;
+        }
+        .spinning {
+            animation: spin 3s forwards;
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .payment-options {
+            display: none; /* Initially hidden */
             margin-top: 20px;
-            font-size: 24px;
+            background-color: white; /* White background for payment options */
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        .payment-options button {
+            background-color: #007bff; /* Blue for payment buttons */
+            color: white;
+        }
+        .payment-options button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
         }
     </style>
 </head>
 <body>
-    <h1>Tap to Earn Coins!</h1>
-    <button id="earnButton">Tap Here!</button>
-    <div class="coins" id="coinCount">Coins Earned: 0</div>
+    <div class="container">
+        <h1>Heads or Tails Game</h1>
+        <div class="ticket">
+            <h3>Your Tickets: <span id="ticketCount">0</span></h3>
+        </div>
+        <img id="coinImage" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Indian_One_Rupee_Coin_2014.jpg" alt="Coin Image">
+        <button class="start-btn" onclick="startGame()">Start Game</button>
+        <div id="gameResult"></div>
+        <h3>Recharge your tickets:</h3>
+        <button class="recharge-btn" onclick="showPaymentOptions(2)">₹2</button>
+        <button class="recharge-btn" onclick="showPaymentOptions(5)">₹5</button>
+        <button class="recharge-btn" onclick="showPaymentOptions(10)">₹10</button>
+        <button class="recharge-btn" onclick="showPaymentOptions(20)">₹20</button>
+        <button class="recharge-btn" onclick="showPaymentOptions(50)">₹50</button>
+        <button class="recharge-btn" onclick="showPaymentOptions(100)">₹100</button>
+
+        <div class="payment-options" id="paymentOptions">
+            <h3>Make Payment:</h3>
+            <p>Pay to: <strong>8573074117</strong></p>
+            <p>Click to pay via:</p>
+            <button onclick="window.open('https://pay.google.com/');">Google Pay</button>
+            <button onclick="window.open('https://www.phonepe.com/');">PhonePe</button>
+            <p id="paymentStatus"></p>
+            <button onclick="confirmPayment()">Confirm Payment</button>
+        </div>
+    </div>
 
     <script>
-        let coins = 0;
+        let ticketCount = 0;
+        let currentAmount = 0; // Store the amount to be paid
 
-        document.getElementById('earnButton').onclick = function() {
-            coins += 1; // Increment coins by 1
-            document.getElementById('coinCount').innerText = "Coins Earned: " + coins;
-        };
+        function showPaymentOptions(amount) {
+            currentAmount = amount; // Set the current amount to be paid
+            alert('Please complete your payment of ₹' + amount + ' to number 8573074117. You will receive ' + amount + ' tickets.');
+            document.getElementById('paymentOptions').style.display = 'block'; // Show payment options
+            document.getElementById('paymentStatus').innerText = ''; // Clear previous payment status
+        }
+
+        function confirmPayment() {
+            // Here we can simulate a successful payment
+            ticketCount += currentAmount; // Add tickets after confirmation
+            document.getElementById('ticketCount').innerText = ticketCount;
+            document.getElementById('paymentOptions').style.display = 'none'; // Hide payment options
+            alert('Payment confirmed! You have received ' + currentAmount + ' tickets.');
+        }
+
+        function startGame() {
+            if (ticketCount > 0) {
+                const coinImage = document.getElementById('coinImage');
+                coinImage.classList.add('spinning'); // Add spinning class
+                document.getElementById('gameResult').innerText = ''; // Clear previous result
+                
+                setTimeout(() => {
+                    const result = Math.random() < 0.5 ? 'Heads' : 'Tails';
+                    document.getElementById('gameResult').innerText = 'Result: ' + result;
+                    ticketCount -= 1; // Deduct 1 ticket for playing
+                    document.getElementById('ticketCount').innerText = ticketCount;
+                    coinImage.classList.remove('spinning'); // Remove spinning class
+                }, 3000); // 3 seconds delay for the coin toss
+            } else {
+                alert('Please recharge to play the game!');
+            }
+        }
     </script>
 </body>
 </html>
